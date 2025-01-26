@@ -7,7 +7,7 @@ project(sdl_test)
 # This makes sure that the dynamic library goes into the build directory automatically.
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
-
+# set(CMAKE_C_STANDARD 99)
 # Add SDL subdirectory
 add_subdirectory(SDL)
 
