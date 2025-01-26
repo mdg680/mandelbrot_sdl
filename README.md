@@ -6,6 +6,15 @@
 #### SDL3
 Project uses SDL3 and is included in the project via a git submodule and resides in ```./SDL``` from which it is included via CMake
 
+When cloning remember to add the ```--recursive``` flag to actually pull the files of the submodule, otherwise it will just be an empty folder.
+If you forget don't worry, you can fecth the submodule files like this:
+```sh
+git submodule update --init
+```
+
+This repository can also be used as a template for new projects, info about how to do this can be found here:
+[Creating repository from a template](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template)
+
 ### CMake setup
 Before doing your first build, you might want to modify the project name and the name of the output executable, also **remember to update the name in the Link step!!**
 ```cmake
