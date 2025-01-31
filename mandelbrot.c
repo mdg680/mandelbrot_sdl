@@ -1,5 +1,6 @@
 #include "mandelbrot.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <complex.h>
 
 // notes
