@@ -29,6 +29,7 @@ static scale_tuple y_scale = { -1.2f, 1.2f };
 
 static int* current_mandelbrot = NULL;
 static int* pallette = NULL;
+SDL_Texture* texture = NULL;
 
 static SDL_Surface *mandelbrot_surface = NULL;
 
@@ -48,6 +49,8 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     }
     pallette = linspace_int(0, 255, MAX_ITER); // TODO: SDL_SetRenderDrawColor has a float version, which can expand color resolution, should upgrade at a later stage
     current_mandelbrot = mandelbrot_set(MAX_ITER, &x_scale, &y_scale, WINDOW_WIDTH, WINDOW_HEIGHT);
+    SDL_Surface* mandelbrot_surface = generate_mandelbrot_surface(MAX_ITER, &x_scale, &y_scale, WINDOW_WIDTH, WINDOW_HEIGHT);
+    texture = SDL_CreateTextureFromSurface(renderer, mandelbrot_surface);
 
 
     return SDL_APP_CONTINUE;  /* carry on with the program! */
@@ -70,26 +73,34 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     int i;
 
     last_time = now;
+    float mouse_x, mouse_y;
+    SDL_GetMouseState(&mouse_x, &mouse_y);
 
     // current_mandelbrot = mandelbrot_set(50, &x_scale, &y_scale, WINDOW_WIDTH, WINDOW_HEIGHT);
     /* as you can see from this, rendering draws over whatever was drawn before it. */
-    //SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);  /* black, full alpha */
-    //SDL_RenderClear(renderer);  /* start with a blank canvas. */
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);  /* black, full alpha */
+    SDL_RenderClear(renderer);  /* start with a blank canvas. */
+    SDL_RenderTexture(renderer, texture, 0, 0);
     int max_color = 0;
-    for (int y = 0; y < WINDOW_HEIGHT; y++) {
-        for (int x = 0; x < WINDOW_WIDTH; x++) {
-            int i = current_mandelbrot[x + y * WINDOW_WIDTH];
-            if (i < MAX_ITER) {
-                int c = pallette[i];
-                if (c > max_color) { max_color = c; }
-                SDL_SetRenderDrawColor(renderer, c - c/2, c - c/2, c, SDL_ALPHA_OPAQUE);
-            } else {
-                SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
-            }
-            SDL_RenderPoint(renderer, x, y);
-        }
-    }
-    // printf("max color: %d\n", max_color);
+    //SDL_DestroyTexture(texture);
+    // for (int y = 0; y < WINDOW_HEIGHT; y++) {
+    //     for (int x = 0; x < WINDOW_WIDTH; x++) {
+    //         int i = current_mandelbrot[x + y * WINDOW_WIDTH];
+    //         if (i < MAX_ITER) {
+    //             int c = pallette[i];
+    //             if (c > max_color) { max_color = c; }
+    //             SDL_SetRenderDrawColor(renderer, c - c/2, c - c/2, c, SDL_ALPHA_OPAQUE);
+    //         } else {
+    //             SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
+    //         }
+    //         SDL_RenderPoint(renderer, x, y);
+    //     }
+    // }
+    char mouse_position[50];
+    sprintf(mouse_position, "(x: %d, y: %d)", (int)mouse_x, (int)mouse_y);
+    //printf(mouse_position);
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+    SDL_RenderDebugText(renderer, 10, 10, mouse_position);
     int last_ticks = SDL_GetTicks();
 
     SDL_RenderPresent(renderer);  /* put it all on the screen! */

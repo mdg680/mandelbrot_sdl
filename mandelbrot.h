@@ -1,6 +1,8 @@
 #ifndef MANDELBROT_H
 #define MANDELBROT_H
 
+#include <SDL3/SDL.h>
+
 typedef struct scale_tuple {
     float start;
     float end;
@@ -14,6 +16,12 @@ final value, and `n` indicates the number of elements in the generated array.
 */
 float* linspace(float start, float end, int n);
 int* linspace_int(int start, int end, int n);
+
+SDL_Surface* generate_mandelbrot_surface(
+    int max_iter, 
+    scale_tuple *x_scale, scale_tuple *y_scale, 
+    int screen_with, int screen_height
+);
 /* Calculate the mandelbrot set */
 int* mandelbrot_set(
     int max_iter, 
