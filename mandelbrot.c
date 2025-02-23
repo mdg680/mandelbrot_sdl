@@ -65,7 +65,8 @@ SDL_Surface* generate_mandelbrot_surface(int max_iter, scale_tuple *x_scale, sca
                     max_iteration_result = iteration;
                 }
             }
-            pixels[px + py * screen_width] = SDL_MapRGB(&details, NULL, iteration, iteration, iteration);
+            // pixels[px + py * screen_width] = SDL_MapRGB(&details, NULL, iteration, iteration, iteration);
+            set_pixel(surface, px, py, SDL_MapRGB(&details, NULL, iteration, iteration, iteration));
         }
     }
     SDL_UnlockSurface(surface);
@@ -107,6 +108,16 @@ int* mandelbrot_set(
     }
     printf("max iteration: %d\n", max_iteration_result);
     return iterationsArray;
+}
+
+void set_pixel(SDL_Surface *surface, int x, int y, Uint32 pixel)
+{
+    Uint32 *const target_pixel = (Uint32 *)((Uint8 *)surface->pixels 
+                                         + y * surface->pitch 
+                                         + x * sizeof(Uint32));
+    *target_pixel = pixel;
+    // Uint32 *pixels = (Uint32 *)surface->pixels;
+    // pixels[x + y * surface->w] = pixel;
 }
 
 

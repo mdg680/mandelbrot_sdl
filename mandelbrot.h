@@ -29,4 +29,6 @@ int* mandelbrot_set(
     int screen_with, int screen_height
 );
 
+void set_pixel(SDL_Surface *surface, int x, int y, Uint32 pixel);
+
 #endif // MANDELBROT_H
