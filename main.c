@@ -32,6 +32,7 @@ static int* pallette = NULL;
 SDL_Texture* texture = NULL;
 
 static SDL_Surface *mandelbrot_surface = NULL;
+static char mouse_position[50];
 
 /* Initialises application, runs once at startup */
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
@@ -50,7 +51,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     pallette = linspace_int(0, 255, MAX_ITER); // TODO: SDL_SetRenderDrawColor has a float version, which can expand color resolution, should upgrade at a later stage
     current_mandelbrot = mandelbrot_set(MAX_ITER, &x_scale, &y_scale, WINDOW_WIDTH, WINDOW_HEIGHT);
     SDL_Surface* mandelbrot_surface = generate_mandelbrot_surface(MAX_ITER, &x_scale, &y_scale, WINDOW_WIDTH, WINDOW_HEIGHT);
-    texture = SDL_CreateTextureFromSurface(renderer, mandelbrot_surface);
+    //texture = SDL_CreateTextureFromSurface(renderer, mandelbrot_surface);
 
 
     return SDL_APP_CONTINUE;  /* carry on with the program! */
@@ -96,7 +97,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     //         SDL_RenderPoint(renderer, x, y);
     //     }
     // }
-    char mouse_position[50];
+    SDL_CreateTextureFromSurface(renderer, mandelbrot_surface);
     sprintf(mouse_position, "(x: %d, y: %d)", (int)mouse_x, (int)mouse_y);
     //printf(mouse_position);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
