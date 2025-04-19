@@ -111,4 +111,18 @@ int* mandelbrot_set(
     return iterationsArray;
 }
 
+void draw_mandelbrot(SDL_Renderer *renderer, int *mandelbrot, int screen_width, int screen_height, int max_iter)
+{
+    for (int y = 0; y < screen_height; y++) {
+        for (int x = 0; x < screen_width; x++) {
+            int i = mandelbrot[x + y * screen_width];
+            if (i < max_iter) {
+                SDL_SetRenderDrawColor(renderer, i, i, i, SDL_ALPHA_OPAQUE);
+            } else {
+                SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
+            }
+            SDL_RenderPoint(renderer, x, y);
+        }
+    }
+}
 

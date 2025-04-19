@@ -49,9 +49,16 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
         return SDL_APP_FAILURE;
     }
     pallette = linspace_int(0, 255, MAX_ITER); // TODO: SDL_SetRenderDrawColor has a float version, which can expand color resolution, should upgrade at a later stage
-    current_mandelbrot = mandelbrot_set(MAX_ITER, &x_scale, &y_scale, WINDOW_WIDTH, WINDOW_HEIGHT);
-    SDL_Surface* mandelbrot_surface = generate_mandelbrot_surface(MAX_ITER, &x_scale, &y_scale, WINDOW_WIDTH, WINDOW_HEIGHT);
-    //texture = SDL_CreateTextureFromSurface(renderer, mandelbrot_surface);
+    current_mandelbrot = mandelbrot_set(
+        MAX_ITER, 
+        &x_scale, &y_scale, 
+        WINDOW_WIDTH, WINDOW_HEIGHT
+    );
+    mandelbrot_surface = generate_mandelbrot_surface(
+        MAX_ITER, 
+        &x_scale, &y_scale, 
+        WINDOW_WIDTH, WINDOW_HEIGHT
+    );
 
 
     return SDL_APP_CONTINUE;  /* carry on with the program! */
@@ -81,27 +88,18 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     /* as you can see from this, rendering draws over whatever was drawn before it. */
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);  /* black, full alpha */
     SDL_RenderClear(renderer);  /* start with a blank canvas. */
-    SDL_RenderTexture(renderer, texture, 0, 0);
-    int max_color = 0;
-    SDL_DestroyTexture(texture);
-    for (int y = 0; y < WINDOW_HEIGHT; y++) {
-        for (int x = 0; x < WINDOW_WIDTH; x++) {
-            int i = current_mandelbrot[x + y * WINDOW_WIDTH];
-            if (i < MAX_ITER) {
-                int c = pallette[i];
-                if (c > max_color) { max_color = c; }
-                SDL_SetRenderDrawColor(renderer, c - c/2, c - c/2, c, SDL_ALPHA_OPAQUE);
-            } else {
-                SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
-            }
-            SDL_RenderPoint(renderer, x, y);
-        }
+    if(texture == NULL) {
+        draw_mandelbrot(renderer, current_mandelbrot, WINDOW_WIDTH, WINDOW_HEIGHT, MAX_ITER);
     }
-    SDL_CreateTextureFromSurface(renderer, mandelbrot_surface);
+    texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, WINDOW_WIDTH, WINDOW_HEIGHT);
+    SDL_RenderTexture(renderer, texture, NULL, NULL);
+
+    // Draw the mouse position
     sprintf(mouse_position, "(x: %d, y: %d)", (int)mouse_x, (int)mouse_y);
-    //printf(mouse_position);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
     SDL_RenderDebugText(renderer, 10, 10, mouse_position);
+
+    //
     int last_ticks = SDL_GetTicks();
 
     SDL_RenderPresent(renderer);  /* put it all on the screen! */

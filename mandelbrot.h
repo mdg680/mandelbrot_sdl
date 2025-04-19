@@ -29,4 +29,6 @@ int* mandelbrot_set(
     int screen_with, int screen_height
 );
 
+void draw_mandelbrot(SDL_Renderer *renderer, int *mandelbrot, int screen_width, int screen_height, int max_iter);
+
 #endif // MANDELBROT_H
